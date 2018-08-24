@@ -1,0 +1,9 @@
+---
+- import_tasks: mysql_install.yml
+  tags:
+    - mysql_install
+
+- import_tasks: jump_install.yml
+  tags:
+    - jump_install
+

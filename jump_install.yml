@@ -1,0 +1,5 @@
+---
+- hosts: jump
+  user: root
+  roles:
+    - jump_install

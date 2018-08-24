@@ -1,0 +1,70 @@
+---
+- name: copy mysql docker images
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - {src: 'mysql_5.7.tar', dest: '/tmp/mysql_5.7.tar'}
+  tags:
+    - docker1
+
+- name: docker import mysql images
+  shell: docker load -i {{ item }}
+  with_items:
+    - /tmp/mysql_5.7.tar
+
+- name: delete mysql images
+  shell: rm -rf /tmp/mysql_5.7.tar
+
+- name: create mysql_data directory
+  file: path={{ mysql_data_path }} state=directory recurse=yes
+  tags:
+    - docker1
+
+- name: install pip
+  apt: name={{ item }} state=present force=yes
+  with_items:
+    - python-pip
+
+- name: install docker-py
+  pip: name={{ item }} state=present
+  with_items:
+    - docker-py
+
+- name: create mysql docker container
+  docker_container:
+    name: "{{ mysql_dockername }}"
+    image: mysql:5.7
+    detach: True
+    ports:
+      - "3306:3306"
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ root_passwd }}"
+      MYSQL_ROOT_HOST: "{{ root_host }}"
+      MYSQL_DATABASE: "{{ database }}"
+      DB_SERVICE_PORT: "{{ database_port }}"
+    volumes:
+      - "{{ mysql_data_path }}:/var/lib/mysql"
+  tags:
+    - docker_mysql      
+      
+#- name: sleep 10s
+#  shell: sleep 10
+#
+#- name: copy jump init database
+#  copy:
+#    src: config.py 
+#    dest: /tmp/config.py
+##    directory_mode: yes
+#  tags:
+#    - docker5
+#
+#- name: copy config.py to jumpserver docker
+#  shell: docker cp  /tmp/config.py {{ jumpserver_dockername }}:/opt/jumpserver/config.py
+#  tags:
+#    - docker5
+#  
+#
+#- name: init open-falcon database
+#  shell: docker exec {{ mysql_dockername }} bash /tmp/db_schema/init.sh
+#  tags:
+#    - docker5

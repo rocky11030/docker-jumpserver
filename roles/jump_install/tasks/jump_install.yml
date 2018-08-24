@@ -1,0 +1,90 @@
+---
+- name: copy jump docker images
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - {src: 'jumpserver.tar', dest: '/tmp/jumpserver.tar'}
+  tags:
+    - docker1
+
+- name: docker import jump images
+  shell: docker load -i {{ item }}
+  with_items:
+    - /tmp/jumpserver.tar
+
+- name: rm jumpserver.tar
+  shell: rm -rf /tmp/jumpserver.tar
+
+- name: create jump_data directory1
+  file: path={{ jump_data_path1 }} state=directory recurse=yes
+  tags:
+    - docker1
+
+#- name: unarchive the jump-data
+#  unarchive:
+#    src: data.tar.gz
+#    dest: "{{ jump_data_path }}"
+
+- name: create jump container
+  docker_container:
+    name: "{{ jump_dockername }}"
+    image: jumpserver
+    detach: True
+    tty: yes 
+    network_mode: host
+ #   command: /bin/bash
+    volumes:
+      - "{{ jump_data_path1 }}:/opt/jumpserver/data"
+      - "/etc/localtime:/etc/localtime:ro"
+  tags:
+    - 111    
+      
+- name: sleep 10s
+  shell: sleep 10
+
+- name: create jump_data directory2
+  file: path={{ jump_data_path2 }} state=directory recurse=yes
+  tags:
+    - docker1
+
+- name: copy config.py and  init database
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+    - {src: 'config.py', dest: '/tmp/config.py'}
+    - {src: 'supervisord.conf', dest: '/tmp/supervisord.conf'}
+  tags:
+    - jump
+
+- name: copy config.py to docker
+  shell: docker cp  /tmp/config.py  {{ jump_dockername }}:/opt/jumpserver/config.py
+  tags:
+    - jump
+  
+- name: copy supervisord.conf to docker
+  shell: docker cp  /tmp/supervisord.conf  {{ jump_dockername }}:/etc/supervisord.conf
+  tags:
+    - jump
+
+- name: delete temporary files
+  shell: rm -rf /tmp/config.py && rm -rf /tmp/supervisord.conf
+
+- name: start redis
+  shell: docker exec {{ jump_dockername }} nohup /usr/bin/redis-server & 
+  tags:
+    - jump10
+
+- name:  init_database 
+  shell: docker exec {{ jump_dockername }} sh -c "cd /opt/jumpserver/utils && source /opt/py3/bin/activate && bash make_migrations.sh"
+  tags:
+    - jump10
+
+- name: kill redis
+  shell: docker exec {{ jump_dockername }} pkill redis
+  tags:
+    - jump10
+
+- name: start supervisord
+  shell: docker exec {{ jump_dockername }} bash entrypoint.sh
+  tags:
+    - jump20

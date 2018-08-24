@@ -1,0 +1,14 @@
+#mysql docker
+mysql_dockername: mysql
+mysql_data_path: /opt/mysql
+root_passwd: Neunn@123
+root_host: "%"
+database: jumpserver
+database_port: 3306
+
+#jumpserver docker
+jump_data_path1: /opt/jumpserver/data
+jump_data_path2: /opt/jumpserver/data/media
+jump_dockername: jumpserver
+jump_ip: 10.2.8.236
+
