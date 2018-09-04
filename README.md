@@ -7,6 +7,7 @@
 - 自动化安装分为mysql和jump两部分
 - mysql_5.7.tar和jumpserver.tar由于太大没放上来
 - jumpserver启动后,最先访问http://10.2.8.236:8080/terminal/terminal/地址激活coco组件
+- k8s只完成了mysql的yaml部分，其余继续....
 
 
 

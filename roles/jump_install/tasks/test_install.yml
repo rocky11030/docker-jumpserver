@@ -1,0 +1,31 @@
+---
+- name: copy jump docker images
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - {src: 'jumpserverv2.tar', dest: '/tmp/jumpserverv2.tar'}
+  tags:
+    - docker1
+
+- name: docker import jump images
+  shell: docker load -i {{ item }}
+  with_items:
+    - /tmp/jumpserverv2.tar
+
+- name: rm jumpserver.tar
+  shell: rm -rf /tmp/jumpserverv2.tar
+
+- name: create jump container
+  docker_container:
+    name: "{{ jump_dockername }}"
+    image: jumpserver:v2
+    detach: True
+    tty: yes 
+    network_mode: host
+    env:
+      local_ip: 10.2.8.236
+      MYSQL_ROOT_PASSWORD: "{{ root_passwd }}"
+      MYSQL_ROOT_HOST: "{{ root_host }}"
+      MYSQL_DATABASE: "{{ database }}"
+      DB_SERVICE_PORT: "{{ database_port }}"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"

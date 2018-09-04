@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  namespace: default 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: db_server
+    spec:
+      containers:
+      - name: db
+        image: mysql:5.7
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "123456"
+        - name: MYSQL_DATABASE
+          value: "jumpserver"
+        - name: MYSQL_ROOT_HOST
+          value: "%"
+        volumeMounts:
+        - name: datapath
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: datapath
+        hostPath:
+          path: /mnt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc
+  namespace: default 
+spec:
+  type: NodePort
+  selector:
+    run: db_server
+  ports:
+  - protocol: TCP
+    nodePort: 32000
+    port: 3306
+    targetPort: 3306
+
