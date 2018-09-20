@@ -79,12 +79,12 @@
   tags:
     - jump10
 
-- name: kill redis
-  shell: docker exec {{ jump_dockername }} pkill redis
-  tags:
-    - jump10
+#- name: kill redis
+#  shell: docker exec {{ jump_dockername }} pkill redis
+#  tags:
+#    - jump10
 
-- name: start supervisord
+- name: start jump && coco && nginx
   shell: docker exec {{ jump_dockername }} bash entrypoint.sh
   tags:
     - jump20

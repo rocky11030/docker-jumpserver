@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(__file__)
 class Config:
     # 项目名称, 会用来向Jumpserver注册, 识别而已, 不能重复
     NAME = "coco"
-    CORE_HOST =  'http://127.0.0.1:8080'
+    #CORE_HOST =  'http://127.0.0.1:8080'
 
     # 启动时绑定的ip, 默认 0.0.0.0
     #BIND_HOST = '0.0.0.0'
@@ -32,7 +32,7 @@ class Config:
     # SECRET_KEY = None
 
     # 设置日志级别 ['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'CRITICAL']
-    LOG_LEVEL =  'WARN'
+    LOG_LEVEL =  'DEBUG'
 
     # 日志存放的目录
     # LOG_DIR = os.path.join(BASE_DIR, 'logs')

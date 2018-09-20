@@ -7,10 +7,14 @@ RUN wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tar.xz -O /opt/Pyt
 RUN tar vxf Python-3.6.1.tar.xz && cd Python-3.6.1 && ./configure && make && make install
 RUN python3 -m venv py3
 
-RUN wget https://github.com/jumpserver/jumpserver/archive/master.zip -O /opt/jumpserver.zip
-RUN wget https://github.com/jumpserver/coco/archive/master.zip -O /opt/coco.zip
-RUN wget https://github.com/jumpserver/luna/releases/download/v1.0.0/luna.tar.gz -O /opt/luna.tar.gz
-RUN unzip coco.zip && mv coco-master coco && unzip jumpserver.zip && mv jumpserver-master jumpserver && tar xzf luna.tar.gz
+#RUN wget https://github.com/jumpserver/jumpserver/archive/master.zip -O /opt/jumpserver.zip
+RUN wget https://github.com/jumpserver/jumpserver/archive/1.3.3.zip -O /opt/jumpserver.zip
+#RUN wget https://github.com/jumpserver/coco/archive/master.zip -O /opt/coco.zip
+RUN wget https://codeload.github.com/jumpserver/coco/zip/1.3.3 -O /opt/coco.zip
+#RUN wget https://github.com/jumpserver/luna/releases/download/v1.0.0/luna.tar.gz -O /opt/luna.tar.gz
+RUN wget https://github.com/jumpserver/luna/releases/download/1.3.3/luna.tar.gz -O /opt/luna.tar.gz
+#RUN unzip coco.zip && mv coco-master coco && unzip jumpserver.zip && mv jumpserver-master jumpserver && tar xzf luna.tar.gz
+RUN unzip coco.zip && mv coco-1.3.3 coco && unzip jumpserver.zip && mv jumpserver-1.3.3 jumpserver && tar xzf luna.tar.gz
 
 RUN yum -y install $(cat /opt/jumpserver/requirements/rpm_requirements.txt) && yum -y install $(cat /opt/coco/requirements/rpm_requirements.txt)
 

@@ -31,12 +31,12 @@ class Config:
     # See https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
     # MySQL or postgres setting like:
-    DB_ENGINE = os.environ.get("DB_ENGINE") or '{{ mysql_dockername }}'
-    DB_HOST = os.environ.get("DB_HOST") or '{{ jump_ip }}'
-    DB_PORT = os.environ.get("DB_PORT") or {{ database_port }}
-    DB_USER = os.environ.get("DB_USER") or 'root'
-    DB_PASSWORD = os.environ.get("DB_PASSWORD") or '{{ root_passwd }}'
-    DB_NAME = os.environ.get("DB_NAME") or "{{ database }}"
+    DB_ENGINE = '{{ mysql_dockername }}'
+    DB_HOST = '{{ jump_ip }}'
+    DB_PORT = {{ database_port }}
+    DB_USER = 'root'
+    DB_PASSWORD = '{{ root_passwd }}'
+    DB_NAME = '{{ database }}'
 
     # When Django start it will bind this host and port
     # ./manage.py runserver 127.0.0.1:8080
@@ -44,9 +44,9 @@ class Config:
     HTTP_LISTEN_PORT = 8080
 
     # Use Redis as broker for celery and web socket
-    REDIS_HOST = os.environ.get("REDIS_HOST") or '127.0.0.1'
-    REDIS_PORT = os.environ.get("REDIS_PORT") or 6379
-    REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD") or ''
+    REDIS_HOST = '127.0.0.1'
+    REDIS_PORT = 6379
+    REDIS_PASSWORD = ''
     BROKER_URL = 'redis://%(password)s%(host)s:%(port)s/3' % {
         'password': REDIS_PASSWORD,
         'host': REDIS_HOST,

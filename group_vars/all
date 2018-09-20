@@ -1,7 +1,7 @@
 #mysql docker
 mysql_dockername: mysql
 mysql_data_path: /opt/mysql
-root_passwd: Neunn@123
+root_passwd: 123456
 root_host: "%"
 database: jumpserver
 database_port: 3306
